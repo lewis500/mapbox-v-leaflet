@@ -1,0 +1,47 @@
+#main{
+	font-family: Arial;
+	display: flex;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left:0;
+}
+
+.col{
+	width: 50%;
+	height: 100%;
+	position: relative;
+}
+
+#mapbox{
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+}
+
+.leaflet{
+	border-left: 3px solid white;
+}
+
+#leaflet{
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+}
+
+.title{
+	position: absolute;
+	width: 100%;
+	text-align: center;
+	bottom: 10px;
+	z-index: 5;
+	color: black;
+	font-size: 36px;
+	background-color: rgba(255,255,255,.65) ;
+}
+
+.leaflet-pane{
+	z-index: 1;
+
+}
