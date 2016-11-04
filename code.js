@@ -21,6 +21,9 @@ let features = data.map(d => {
     geometry: {
       type: "Point",
       coordinates: d
+    },
+    properties: {
+      hello: 'hello'
     }
   };
 });
@@ -60,7 +63,34 @@ function setupMapBox() {
       }
     })
 
-  })
+  });
+
+  // Create a popup, but don't add it to the map yet.
+  var popup = new mapboxgl.Popup({
+    closeButton: false,
+    closeOnClick: false
+  });
+
+  map.on('mousemove', e => {
+    var features = map.queryRenderedFeatures(e.point, {
+      layers: ['points']
+    });
+    // Change the cursor style as a UI indicator.
+    map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
+
+    if (!features.length) {
+      popup.remove();
+      return;
+    }
+
+    var feature = features[0];
+
+    // Populate the popup and set its coordinates
+    // based on the feature found.
+    popup.setLngLat(feature.geometry.coordinates)
+      .setHTML(feature.properties.hello)
+      .addTo(map);
+  });
 
 }
 
@@ -76,21 +106,29 @@ function setupLeaflet() {
       markerZoomAnimation: false
     }).addTo(map);
 
-var geojsonMarkerOptions = {
-  radius: 3,
-  fillColor: "#03A9F4",
-  // color: "#fff",
-  weight: 0,
-  opacity: 1,
-  fillOpacity: 0.8
-};
+  var geojsonMarkerOptions = {
+    radius: 3,
+    fillColor: "#03A9F4",
+    // color: "#fff",
+    weight: 0,
+    opacity: 1,
+    fillOpacity: 0.8
+  };
 
 
-L.geoJSON(geojson, {
-  pointToLayer: (feature, latlng) => {
-    return L.circleMarker(latlng, geojsonMarkerOptions);
-  }
-}).addTo(map);
+  L.geoJSON(geojson, {
+    pointToLayer: (feature, latlng) => {
+      var marker = L.circleMarker(latlng, geojsonMarkerOptions);
+      marker.bindPopup(feature.properties.hello);
+      marker.on('mouseover', function(e) {
+        this.openPopup();
+      });
+      marker.on('mouseout', function(e) {
+        this.closePopup();
+      });
+      return marker;
+    }
+  }).addTo(map);
 
 }
 
